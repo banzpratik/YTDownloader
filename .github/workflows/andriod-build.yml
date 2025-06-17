@@ -1,4 +1,3 @@
-# .github/workflows/android-build.yml
 name: Build APK with Buildozer
 
 on:
@@ -10,47 +9,29 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      # 1) Check out your repo
       - uses: actions/checkout@v3
 
-      # 2) Install Ubuntu packages for Buildozer/toolchain
       - name: Install system dependencies
         run: |
           sudo apt-get update
-
-          # Core build tools + Java
           sudo apt-get install -y \
             python3-pip build-essential git zip unzip openjdk-17-jdk \
-            autoconf automake libtool pkg-config
-
-          # Python headers & crypto/ffi
-          sudo apt-get install -y \
-            python3-dev libssl-dev libffi-dev zlib1g-dev
-
-          # SDL2 (Kivy bootstrap), images, audio, fonts, portmidi
-          sudo apt-get install -y \
+            autoconf automake libtool pkg-config \
+            python3-dev libssl-dev libffi-dev zlib1g-dev \
             libsdl2-dev libsdl2-image-dev libsdl2-mixer-dev libsdl2-ttf-dev \
-            libjpeg-dev libfreetype6-dev libportmidi-dev
+            libjpeg-dev libfreetype6-dev libportmidi-dev \
+            mesa-common-dev libgl1-mesa-dev libgles2-mesa-dev \
+            swig libsqlite3-dev \
+            gettext m4
 
-          # OpenGL ES / Mesa headers
-          sudo apt-get install -y \
-            mesa-common-dev libgl1-mesa-dev libgles2-mesa-dev
-
-          # (Optional but often needed) 
-          # SWIG for C extension wrapping, SQLite, networking
-          sudo apt-get install -y swig libsqlite3-dev
-
-      # 3) Install Buildozer & Cython into Python
       - name: Install Buildozer & Cython
         run: |
           pip3 install --upgrade buildozer cython
 
-      # 4) Run Buildozer non-interactively (yes → all prompts)
       - name: Build APK
         run: |
           yes | buildozer --verbose android debug
 
-      # 5) Upload the resulting APK
       - uses: actions/upload-artifact@v4
         with:
           name: app-debug-apk
