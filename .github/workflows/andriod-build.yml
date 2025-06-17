@@ -1,3 +1,4 @@
+# .github/workflows/android-build.yml
 name: Build APK with Buildozer
 
 on:
@@ -9,28 +10,50 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      # 1) Checkout your code
       - uses: actions/checkout@v3
 
+      # 2) Install every native dependency for p4a/toolchain
       - name: Install system dependencies
         run: |
           sudo apt-get update
-           sudo apt-get install -y \
-           python3-pip build-essential git zip unzip openjdk-17-jdk \
-           autoconf automake libtool libtool-bin pkg-config \
-           python3-dev libssl-dev libffi-dev zlib1g-dev \
-           libsdl2-dev libsdl2-image-dev libsdl2-mixer-dev libsdl2-ttf-dev \
-           libjpeg-dev libfreetype6-dev libportmidi-dev \
-           mesa-common-dev libgl1-mesa-dev libgles2-mesa-dev \
-           swig libsqlite3-dev \
-           gettext m4 autoconf-archive
+
+          # Core build tools + Java
+          sudo apt-get install -y \
+            python3-pip build-essential git zip unzip openjdk-17-jdk
+
+          # Autotools + libtool + macro packages
+          sudo apt-get install -y \
+            autoconf automake libtool libtool-bin autotools-dev autoconf-archive pkg-config
+
+          # Python headers & crypto/ffi
+          sudo apt-get install -y \
+            python3-dev libssl-dev libffi-dev zlib1g-dev
+
+          # SDL2 + multimedia (Kivy requirements)
+          sudo apt-get install -y \
+            libsdl2-dev libsdl2-image-dev libsdl2-mixer-dev libsdl2-ttf-dev \
+            libjpeg-dev libfreetype6-dev libportmidi-dev
+
+          # OpenGL ES / Mesa headers
+          sudo apt-get install -y \
+            mesa-common-dev libgl1-mesa-dev libgles2-mesa-dev
+
+          # SWIG, SQLite, gettext & m4 macros
+          sudo apt-get install -y \
+            swig libsqlite3-dev gettext m4 libltdl-dev
+
+      # 3) Install Buildozer & Cython
       - name: Install Buildozer & Cython
         run: |
           pip3 install --upgrade buildozer cython
 
-      - name: Build APK
+      # 4) Non-interactive build (auto-yes to all prompts)
+      - name: Build APK with Buildozer
         run: |
           yes | buildozer --verbose android debug
 
+      # 5) Upload the resulting APK
       - uses: actions/upload-artifact@v4
         with:
           name: app-debug-apk
