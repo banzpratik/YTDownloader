@@ -15,7 +15,6 @@ class MainActivity : AppCompatActivity() {
         if (! Python.isStarted()) {
             Python.start(AndroidPlatform(this))
         }
-
         val py = Python.getInstance()
         val pyObj = py.getModule("main")
 
