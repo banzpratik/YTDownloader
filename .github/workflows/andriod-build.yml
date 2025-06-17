@@ -9,26 +9,23 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      # 1️⃣ Check out your code
       - uses: actions/checkout@v3
 
-      # 2️⃣ Install system dependencies
       - name: Install deps
         run: |
           sudo apt-get update
-          sudo apt-get install -y python3-pip build-essential git zip unzip openjdk-17-jdk
+          sudo apt-get install -y \
+            python3-pip build-essential git zip unzip openjdk-17-jdk \
+            autoconf automake libtool pkg-config
 
-      # 3️⃣ Install Buildozer & Cython
-      - name: Install Buildozer
+      - name: Install Buildozer & Cython
         run: |
           pip3 install --upgrade buildozer cython
 
-      # 4️⃣ Build the APK (automatically say “yes” to every prompt)
       - name: Build APK
         run: |
           yes | buildozer --verbose android debug
 
-      # 5️⃣ Upload the APK artifact
       - uses: actions/upload-artifact@v4
         with:
           name: app-debug-apk
