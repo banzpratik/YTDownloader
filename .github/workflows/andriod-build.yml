@@ -14,16 +14,15 @@ jobs:
       - name: Install system dependencies
         run: |
           sudo apt-get update
-          sudo apt-get install -y \
-            python3-pip build-essential git zip unzip openjdk-17-jdk \
-            autoconf automake libtool pkg-config \
-            python3-dev libssl-dev libffi-dev zlib1g-dev \
-            libsdl2-dev libsdl2-image-dev libsdl2-mixer-dev libsdl2-ttf-dev \
-            libjpeg-dev libfreetype6-dev libportmidi-dev \
-            mesa-common-dev libgl1-mesa-dev libgles2-mesa-dev \
-            swig libsqlite3-dev \
-            gettext m4
-
+           sudo apt-get install -y \
+           python3-pip build-essential git zip unzip openjdk-17-jdk \
+           autoconf automake libtool libtool-bin pkg-config \
+           python3-dev libssl-dev libffi-dev zlib1g-dev \
+           libsdl2-dev libsdl2-image-dev libsdl2-mixer-dev libsdl2-ttf-dev \
+           libjpeg-dev libfreetype6-dev libportmidi-dev \
+           mesa-common-dev libgl1-mesa-dev libgles2-mesa-dev \
+           swig libsqlite3-dev \
+           gettext m4 autoconf-archive
       - name: Install Buildozer & Cython
         run: |
           pip3 install --upgrade buildozer cython
